@@ -6,6 +6,7 @@ import unicodedata
 from bs4 import BeautifulSoup
 from contractions import CONTRACTION_MAP
 from nltk.tokenize.toktok import ToktokTokenizer
+from nltk.tokenize import TweetTokenizer
 
 
 tokenizer = ToktokTokenizer()
@@ -14,12 +15,12 @@ nlp = spacy.load('en_core_web_sm')
 
 
 def remove_html_tags(text):
-    # Put your code
+    text = BeautifulSoup(text).text
     return text
 
 
 def stem_text(text):
-    # Put your code
+    # HOLA
     return text
 
 
@@ -29,12 +30,28 @@ def lemmatize_text(text):
 
 
 def expand_contractions(text, contraction_mapping=CONTRACTION_MAP):
-    # Put your code
+    expanded_words=[]
+    is_first_word = True
+
+    for w in TweetTokenizer().tokenize(text):
+        if w in contraction_mapping:
+            w = contraction_mapping[w]
+            if not is_first_word:
+                w = " " + w
+        else:
+            if not is_first_word:
+                if w.isalpha():
+                    w = " " + w
+
+        is_first_word = False
+        expanded_words.append(w)
+        
+    text = "".join(expanded_words)
     return text
 
 
 def remove_accented_chars(text):
-    # Put your code
+    text = unicodedata.normalize("NFD", text).encode('ascii', 'ignore').decode("utf-8")
     return text
 
 
@@ -49,12 +66,12 @@ def remove_stopwords(text, is_lower_case=False, stopwords=stopword_list):
 
 
 def remove_extra_new_lines(text):
-    # Put your code
+    text = text.replace("\n", "")
     return text
 
 
 def remove_extra_whitespace(text):
-    # Put your code
+    # HOLOA
     return text
     
 
