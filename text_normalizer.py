@@ -7,46 +7,47 @@ from bs4 import BeautifulSoup
 from contractions import CONTRACTION_MAP
 from nltk.tokenize.toktok import ToktokTokenizer
 from nltk.tokenize import TweetTokenizer
-
+from nltk.stem import PorterStemmer
 
 tokenizer = ToktokTokenizer()
 stopword_list = nltk.corpus.stopwords.words('english')
 nlp = spacy.load('en_core_web_sm')
-
+porter = PorterStemmer()
 
 def remove_html_tags(text):
-    text = BeautifulSoup(text).text
+    text = BeautifulSoup(text, "html.parser").text
     return text
 
 
 def stem_text(text):
-    # HOLA
+    text = " ".join([porter.stem(token) for token in tokenizer.tokenize(text)])
     return text
 
 
 def lemmatize_text(text):
-    # Put your code
+    doc = nlp(text)
+    tokens = []
+    for token in doc:
+        tokens.append(token)
+
+    text = " ".join([token.lemma_ for token in doc])
     return text
 
 
 def expand_contractions(text, contraction_mapping=CONTRACTION_MAP):
     expanded_words=[]
-    is_first_word = True
 
     for w in TweetTokenizer().tokenize(text):
         if w in contraction_mapping:
-            w = contraction_mapping[w]
-            if not is_first_word:
-                w = " " + w
-        else:
-            if not is_first_word:
-                if w.isalpha():
-                    w = " " + w
+            w = " " + contraction_mapping[w]
 
-        is_first_word = False
+        else:
+            if w.isalpha():
+                w = " " + w
+
         expanded_words.append(w)
-        
-    text = "".join(expanded_words)
+    
+    text = "".join(expanded_words)[1:]
     return text
 
 
@@ -56,22 +57,28 @@ def remove_accented_chars(text):
 
 
 def remove_special_chars(text, remove_digits=False):
-    # Put your code
+    text = re.sub(r"[^a-zA-Z0-9 ]","",text)
+    if remove_digits:
+        text = re.sub("\d+", "", text)
     return text
 
 
 def remove_stopwords(text, is_lower_case=False, stopwords=stopword_list):
-    # Put your code
+    clean_words = []
+    for w in tokenizer.tokenize(text.lower()):
+        if w not in stopword_list:
+            clean_words.append(w) 
+    text = " ".join(clean_words)
     return text
 
 
 def remove_extra_new_lines(text):
-    text = text.replace("\n", "")
+    text = text.replace("\n", " ")
     return text
 
 
 def remove_extra_whitespace(text):
-    # HOLOA
+    text = re.sub(' +', ' ',text)
     return text
     
 
