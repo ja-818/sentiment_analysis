@@ -23,4 +23,8 @@ ENV PATH=$PATH:/home/app/.local/bin
 ADD requirements.txt .
 RUN pip3 install -r requirements.txt
 
+RUN pip install lightgbm
+
+RUN python -m spacy download en_core_web_sm
+
 WORKDIR /home/app
