@@ -6,7 +6,7 @@
 You can use `Docker` to easily install all the needed packages and libraries:
 
 ```bash
-$ docker build -t nlp_project -f docker/Dockerfile .
+$ docker build -t nlp_project -f Dockerfile .
 ```
 
 ### Run Docker
