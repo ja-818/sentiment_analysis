@@ -7,14 +7,13 @@ from sklearn.preprocessing import label_binarize
 
 def get_performance(predictions, y_test, labels=[1, 0]):
     # Put your code
-    accuracy = None  # replace
-    precision = None  # replace
-    recall = None  # replace
-    f1_score = None  # replace
+    accuracy = metrics.accuracy_score(y_test, predictions)
+    precision = metrics.precision_score(y_test, predictions)
+    recall = metrics.recall_score(y_test, predictions)
+    f1_score = metrics.f1_score(y_test, predictions)
+    report = metrics.classification_report(y_test, predictions)
     
-    report = None  # replace
-    
-    cm = None  # replace
+    cm = metrics.confusion_matrix(y_test, predictions)
     cm_as_dataframe = pd.DataFrame(data=cm)
     
     print('Model Performance metrics:')
@@ -35,9 +34,11 @@ def get_performance(predictions, y_test, labels=[1, 0]):
 
 def plot_roc(model, y_test, features):
     # Put your code
-    fpr = None  # replace
-    tpr = None  # replace
-    roc_auc = None  # replace
+    predicted_proba = model.predict_proba(features)
+    predicted_proba = predicted_proba[:, predicted_proba.shape[1]-1]
+    fpr = metrics.roc_curve(y_test, predicted_proba)[0]
+    tpr = metrics.roc_curve(y_test, predicted_proba)[1]
+    roc_auc = metrics.auc(fpr, tpr)
 
     plt.figure(figsize=(10, 5))
     plt.plot(fpr, tpr, label=f'ROC curve (area = {roc_auc})', linewidth=2.5)
